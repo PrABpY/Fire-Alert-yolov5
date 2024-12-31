@@ -1,0 +1,13 @@
+train: ../fire-detect/train/images
+val: ../fire-detect/valid/images
+test: ../fire-detect/test/images
+
+nc: 2
+names: ['Flame', 'Person']
+
+roboflow:
+  workspace: job1-3xy11
+  project: fire-emergency
+  version: 1
+  license: MIT
+  url: https://universe.roboflow.com/job1-3xy11/fire-emergency/dataset/1
