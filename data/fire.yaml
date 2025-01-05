@@ -1,0 +1,13 @@
+train: dataser_ver1/train/images
+val: dataser_ver1/valid/images
+test: dataser_ver1/test/images
+
+nc: 2
+names: ['Flame', 'Person']
+
+roboflow:
+  workspace: job1-3xy11
+  project: fire-emergency
+  version: 7
+  license: MIT
+  url: https://universe.roboflow.com/job1-3xy11/fire-emergency/dataset/7

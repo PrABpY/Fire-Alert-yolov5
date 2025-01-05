@@ -98,8 +98,8 @@ def run(
     weights=ROOT / "yolov5s.pt",  # model path or triton URL
     source=ROOT / "data/images",  # file/dir/URL/glob/screen/0(webcam)
     data=ROOT / "data/coco128.yaml",  # dataset.yaml path
-    imgsz=(640, 640),  # inference size (height, width)
-    conf_thres=0.25,  # confidence threshold
+    imgsz=(416, 416),  # inference size (height, width)
+    conf_thres=0.15,  # confidence threshold
     iou_thres=0.45,  # NMS IOU threshold
     max_det=1000,  # maximum detections per image
     device="",  # cuda device, i.e. 0 or 0,1,2,3 or cpu
@@ -160,21 +160,8 @@ def run(
         half (bool): If True, use FP16 half-precision inference. Default is False.
         dnn (bool): If True, use OpenCV DNN backend for ONNX inference. Default is False.
         vid_stride (int): Stride for processing video frames, to skip frames between processing. Default is 1.
-
-    Returns:
-        None
-
-    Examples:
-        ```python
-        from ultralytics import run
-
-        # Run inference on an image
-        run(source='data/images/example.jpg', weights='yolov5s.pt', device='0')
-
-        # Run inference on a video with specific confidence threshold
-        run(source='data/videos/example.mp4', weights='yolov5s.pt', conf_thres=0.4, device='0')
-        ```
     """
+
     global counts
     source = str(source)
     save_img = not nosave and not source.endswith(".txt")  # save inference images
@@ -321,6 +308,8 @@ def run(
                     h = im0.shape[0]
                     w = im0.shape[1]
 
+                    if confidence < 0.1 : continue
+
                     if save_csv:
                         write_to_csv(p.name, label, confidence_str)
 
@@ -418,51 +407,8 @@ def run(
 
 
 def parse_opt():
-    """
-    Parse command-line arguments for YOLOv5 detection, allowing custom inference options and model configurations.
-
-    Args:
-        --weights (str | list[str], optional): Model path or Triton URL. Defaults to ROOT / 'yolov5s.pt'.
-        --source (str, optional): File/dir/URL/glob/screen/0(webcam). Defaults to ROOT / 'data/images'.
-        --data (str, optional): Dataset YAML path. Provides dataset configuration information.
-        --imgsz (list[int], optional): Inference size (height, width). Defaults to [640].
-        --conf-thres (float, optional): Confidence threshold. Defaults to 0.25.
-        --iou-thres (float, optional): NMS IoU threshold. Defaults to 0.45.
-        --max-det (int, optional): Maximum number of detections per image. Defaults to 1000.
-        --device (str, optional): CUDA device, i.e., '0' or '0,1,2,3' or 'cpu'. Defaults to "".
-        --view-img (bool, optional): Flag to display results. Defaults to False.
-        --save-txt (bool, optional): Flag to save results to *.txt files. Defaults to False.
-        --save-csv (bool, optional): Flag to save results in CSV format. Defaults to False.
-        --save-conf (bool, optional): Flag to save confidences in labels saved via --save-txt. Defaults to False.
-        --save-crop (bool, optional): Flag to save cropped prediction boxes. Defaults to False.
-        --nosave (bool, optional): Flag to prevent saving images/videos. Defaults to False.
-        --classes (list[int], optional): List of classes to filter results by, e.g., '--classes 0 2 3'. Defaults to None.
-        --agnostic-nms (bool, optional): Flag for class-agnostic NMS. Defaults to False.
-        --augment (bool, optional): Flag for augmented inference. Defaults to False.
-        --visualize (bool, optional): Flag for visualizing features. Defaults to False.
-        --update (bool, optional): Flag to update all models in the model directory. Defaults to False.
-        --project (str, optional): Directory to save results. Defaults to ROOT / 'runs/detect'.
-        --name (str, optional): Sub-directory name for saving results within --project. Defaults to 'exp'.
-        --exist-ok (bool, optional): Flag to allow overwriting if the project/name already exists. Defaults to False.
-        --line-thickness (int, optional): Thickness (in pixels) of bounding boxes. Defaults to 3.
-        --hide-labels (bool, optional): Flag to hide labels in the output. Defaults to False.
-        --hide-conf (bool, optional): Flag to hide confidences in the output. Defaults to False.
-        --half (bool, optional): Flag to use FP16 half-precision inference. Defaults to False.
-        --dnn (bool, optional): Flag to use OpenCV DNN for ONNX inference. Defaults to False.
-        --vid-stride (int, optional): Video frame-rate stride, determining the number of frames to skip in between
-            consecutive frames. Defaults to 1.
-
-    Returns:
-        argparse.Namespace: Parsed command-line arguments as an argparse.Namespace object.
-
-    Example:
-        ```python
-        from ultralytics import YOLOv5
-        args = YOLOv5.parse_opt()
-        ```
-    """
     parser = argparse.ArgumentParser()
-    parser.add_argument("--weights", nargs="+", type=str, default="runs/train/exp8/weights/best.pt", help="model path or triton URL")
+    parser.add_argument("--weights", nargs="+", type=str, default="runs/train/exp16/weights/best.pt", help="model path or triton URL")
     parser.add_argument("--source", type=str, default="0", help="file/dir/URL/glob/screen/0(webcam)")
     parser.add_argument("--data", type=str, default="data/fire-detect.yaml", help="(optional) dataset.yaml path")
     parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[640], help="inference size h,w")
@@ -501,33 +447,9 @@ def parse_opt():
     print_args(vars(opt))
     return opt
 
-
 def main(opt):
-    """
-    Executes YOLOv5 model inference based on provided command-line arguments, validating dependencies before running.
-
-    Args:
-        opt (argparse.Namespace): Command-line arguments for YOLOv5 detection. See function `parse_opt` for details.
-
-    Returns:
-        None
-
-    Note:
-        This function performs essential pre-execution checks and initiates the YOLOv5 detection process based on user-specified
-        options. Refer to the usage guide and examples for more information about different sources and formats at:
-        https://github.com/ultralytics/ultralytics
-
-    Example usage:
-
-    ```python
-    if __name__ == "__main__":
-        opt = parse_opt()
-        main(opt)
-    ```
-    """
     check_requirements(ROOT / "requirements.txt", exclude=("tensorboard", "thop"))
     run(**vars(opt))
-
 
 if __name__ == "__main__":
     opt = parse_opt()
