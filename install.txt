@@ -1,0 +1,13 @@
+ขั้นตอนการติดตั้ง YOLOv5 บน Jetson Nano 
+
+-> เข้าไปที่ terminal แล้ว copy ไปวางที่ละคำสั่งได้เลยครับ
+
+1. อัพเดตระบบและติดตั้งไลบรารีพื้นฐาน
+
+sudo apt update
+sudo apt upgrade
+sudo apt install git python3-pip python3-opencv
+
+2. ติดตั้ง PyTorch และ TorchVision สำหรับ Jetson Nano
+
+sudo apt install nvidia-jetpack
