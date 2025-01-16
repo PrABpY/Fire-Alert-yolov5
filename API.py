@@ -42,7 +42,7 @@ from discordwebhook import Discord
 
 #========================================ลูกค้าสามารถเปลี่ยน Webhook ได้ตรงนี้======================================================
 
-discord = Discord(url="https://discord.com/api/webhooks/1323483640390488134/wllh4ktEsqx_hShQQ7n-kAmFm4Pbs0JnMDQyLk73cx0sR690K2QPNhu0wzk-9ytP6yhj")
+discord = Discord(url="https://discord.com/api/webhooks/1329317670943723562/AnimPirHEgoac2jiRH0ygnL3YMFMCGbCou1unyTFjMneW9Ic9ZZIkh-t8XN_x8tAI11i")
 
 #==========================================================================================================================
 
