@@ -263,6 +263,8 @@ def run(
                     h = im0.shape[0]
                     w = im0.shape[1]
 
+                    if confidence < 0.35 : continue 
+
                     if save_csv:
                         write_to_csv(p.name, label, confidence_str)
 
